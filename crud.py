@@ -1,113 +1,83 @@
 import mysql.connector
 import getpass
-import os
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import PhotoImage
 
-os.system('cls')
+def insert_data():
+    _cod = cod_entry.get()
+    _nom = nom_entry.get()
+    _ape = ape_entry.get()
+    _con = con_entry.get()
 
-try:
-    connection = mysql.connector.connect(host='localhost',
-                                        database='bd_certus',
-                                        user='root',
-                                        password='')
-    print("Conexion exitosa!")
-
-except mysql.connector.Error as e:
-    print("Error en la consulta", e)
-###########################################
-
-def insert_into(_connection, _cod, _nom, _ape, _con):
-    #print("INSERT INTO")
-
-    _con = getpass.getpass("Contraseña: ")  # Solicitar la contraseña de forma segura
-    sql_insert_Query = "insert into t_estudiantes(cod_estudiante, nom_estudiante, ape_estudiante, con_estudiante) values (%s, %s, %s, %s)"
-    cursor = _connection.cursor()
-    cursor.execute(sql_insert_Query, (_cod, _nom, _ape, _con))
-    _connection.commit()
-    print("Registro insertado!")
-
-
-def select(_connection):
-    #print("SELECT * FROM")
-    sql_select_Query = "select * from t_estudiantes"
-    cursor = _connection.cursor()
-    cursor.execute(sql_select_Query)
-    records = cursor.fetchall()
-
-    for row in records:
-        print("Codigo = ", row[0], )
-        print("Nombre = ", row[1])
-        print("Apellido  = ", row[2])
-        print("Contraseña  = ", row[3], "\n")
-
-
-def update(_connection, new_con, _cod_estudiante):
-    #print("UPDATE")
-    sql_update_Query = "update t_estudiantes set con_estudiante = %s where cod_estudiante = %s"
-    cursor = _connection.cursor()
-    cursor.execute(sql_update_Query, (new_con, _cod_estudiante))
-    _connection.commit()
-    print("Registro actualizado!")
-
-def delete(_connection, _cod):
-    #print("DELETE")
-    sql_delete_Query = "delete from t_estudiantes where cod_estudiante = %s"
-    cursor = _connection.cursor()
-    cursor.execute(sql_delete_Query, (_cod,))
-    _connection.commit()
-    print("Registro eliminado!")
-
-
-def menu_opciones():
-    print("INICIO del CRUD")
-    print("=====================")
-    print("[1] Insertar")
-    print("[2] Seleccionar")
-    print("[3] Modificar")
-    print("[4] Eliminar")
-    print("[5] Salir del programa")
-    print("=====================")
-
-op = None
-while op is None:
     try:
-        op = int(input("Ingrese un opcion: "))
-    except ValueError:
-        print("Por favor, ingrese un número válido.")
+        sql_insert_Query = "INSERT INTO t_estudiantes(cod_estudiante, nom_estudiante, ape_estudiante, con_estudiante) VALUES (%s, %s, %s, %s)"
+        cursor = connection.cursor()
+        cursor.execute(sql_insert_Query, (_cod, _nom, _ape, _con))
+        connection.commit()
+        messagebox.showinfo("Éxito", "Registro insertado!")
 
-    if op == 1:
-        print("Ingrese los datos del estudiante")
-        _cod = input("Codigo: ")
-        _nom = input("Nombres: ")
-        _ape = input("Apellidos: ")
-        _con = input("Contraseña: ")
-        insert_into(connection, _cod, _nom, _ape, _con)
+        cod_entry.delete(0, "end")
+        nom_entry.delete(0, "end")
+        ape_entry.delete(0, "end")
+        con_entry.delete(0, "end")
 
-    elif op == 2:
-        select(connection)
-        
-    elif op == 3:
-        print("Modificar contraseña de estudiante")
-        _cod = input("Codigo del estudiante: ")
-        new_con = input("Nueva contraseña: ")
-        update(connection, new_con, _cod)
+    except mysql.connector.Error as e:
+        messagebox.showerror("Error", f"Error en la inserción: {e}")
 
-    elif op == 4:
-        print("Eliminar registro de estudiante")
-        _cod_est = input("Codigo del estudiante: ")
-        delete(connection, _cod_est)
-
-    elif op == 5:
-        print("FIN del CRUD")
-        break; 
-
-    print("===================================")
-    rpt = input("Desea regresar al menu de opciones? s/n: ")
-
-    if rpt == "s":
-        #limpiar consola
-        os.system('cls')
+def validate_code(P):
+    if len(P) <= 8:
+        return True
     else:
-        exit()
-    
-else:
-    print("FIN del CRUD")
+        return False
+
+def load_background_image():
+    background_image = PhotoImage(file="./certus5.png")
+    background_label = tk.Label(root, image=background_image)
+    background_label.place(relwidth=1, relheight=1)  
+    background_label.image = background_image
+
+root = tk.Tk()
+root.title("Inserción de Datos de Estudiante")
+root.geometry("400x300")
+load_background_image()
+
+# Colores y fuentes
+bg_color = "#F6F7F9"
+label_font = ("Helvetica", 12)
+entry_font = ("Helvetica", 12)
+button_font = ("Helvetica", 12)
+
+# Conexión a la base de datos
+try:
+    connection = mysql.connector.connect(host='localhost', database='bd_certus', user='root', password='')
+except mysql.connector.Error as e:
+    messagebox.showerror("Error de conexión", f"No se pudo conectar a la base de datos: {e}")
+    root.destroy()
+
+# Etiquetas y campos de entrada
+cod_label = tk.Label(root, text="Código:", font=label_font, bg=bg_color)
+cod_label.pack()
+validation = root.register(validate_code) 
+cod_entry = tk.Entry(root, validate="key", validatecommand=(validation, "%P"))
+cod_entry.pack()
+
+nom_label = tk.Label(root, text="Nombres:", font=label_font, bg=bg_color)
+nom_label.pack()
+nom_entry = tk.Entry(root)
+nom_entry.pack()
+
+ape_label = tk.Label(root, text="Apellidos:", font=label_font, bg=bg_color)
+ape_label.pack()
+ape_entry = tk.Entry(root)
+ape_entry.pack()
+
+con_label = tk.Label(root, text="Contraseña:", font=label_font, bg=bg_color)
+con_label.pack()
+con_entry = tk.Entry(root, show="*")
+con_entry.pack()
+
+insert_button = tk.Button(root, text="Insertar Registro", command=insert_data, font=label_font, bg=bg_color)
+insert_button.pack()
+
+root.mainloop()
