@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import scrolledtext
-import time  
 
 def open_chat_window(username):
     chat_window = tk.Toplevel()
@@ -39,7 +38,8 @@ def open_chat_window(username):
         
         keyword_responses = {
             'hola': 'Hola soy botCertus 😊 ¿En qué puedo ayudarte?',
-            'información básica curso': 'La Unidad Didáctica Integradora "Diseño de\nSoluciones de Inteligencia Artificial"\ncorresponde a la carrera de Diseño y Desarrollo\nde Software y Soluciones Móviles y tiene carácter\nteórico-práctico.\nA través de ella se busca que el estudiante sea\ncapaz de diseñar soluciones de inteligencia\nartificial utilizando diferentes servicios y\nherramientas de Machine Learning.',
+            'información de un curso': 'De que curso deseas tener mayor información?:\n1.-GESTIÓN DE MARCA PERSONAL\n2.-Arquitectura de Tecnologías de Información.\n3.-Diseño de Soluciones de Inteligencia Artificial.\n4.-Diseño de Soluciones Blockchain.\n5.-Emprendimiento: Proyecto integrador.\n6.-Experiencia Formativas en Situaciones Reales de Trabajo',             
+            '3': 'La Unidad Didáctica Integradora "Diseño de\nSoluciones de Inteligencia Artificial"\ncorresponde a la carrera de Diseño y Desarrollo\nde Software y Soluciones Móviles y tiene carácter\nteórico-práctico.\nA través de ella se busca que el estudiante sea\ncapaz de diseñar soluciones de inteligencia\nartificial utilizando diferentes servicios y\nherramientas de Machine Learning.',
             'requisitos curso': 'Los requisitos del curso incluyen:\n1.Previo saberes de implemnetación\n2.Puntulidad de acuerdo a los horarios',
             'grabaciones de las clases': 'Puedes ver las grabaciones de las clases en las siguientes fechas:\nVer Grabación = miércoles, 11 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023\nVer Grabación = miércoles, 04 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023.',
             'sistemas de evaluación': 'La calificación de las evidencias 3 y 4 (E3 y E4)\nse obtiene al aplicar la siguiente fórmula:\nE3 = PF3(0.70) + PA(0.30),\nE4 = PF4(0.70) + C(0.30).\nFinalmente, para la calificación final (CF)\nde la unidad didáctica se aplica\nla siguiente fórmula:\nCF = E1(0.15) + E2(0.20) + E3(0.30) + E4(0.35).',
@@ -57,12 +57,12 @@ def open_chat_window(username):
             display_message("Bot: 'No estoy seguro de lo quieres, disculpa, puedes intentarlo de nuevo?")
 
         #si el usuario demora en responder 30seg enviará este mensaje
-    def simulate_bot_response():
-        time.sleep(30)
-        display_message("Bot: Estoy aquí para ayudarte. Qué necesitas?")
+    #def simulate_bot_response():
+        #time.sleep(30)
+        #display_message("Bot: Estoy aquí para ayudarte. Qué necesitas?")
     #será un chat personalizado ya que el nombre ingresado en el loginserá parte de la bienvenida
     display_message(f"Bot: ¡Bienvenido al chat, {username}! ¿En qué puedo ayudarte?")
-    chat_window.after(1000, simulate_bot_response) 
+    #chat_window.after(1000, simulate_bot_response) 
 
     chat_window.mainloop()
 
