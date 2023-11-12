@@ -35,7 +35,6 @@ def open_chat_window(username):
 
     #mnsjs del user
     def handle_user_message(user_input):
-        
         cleaned_input = user_input.lower().strip()
         
         keyword_responses = {
@@ -58,14 +57,7 @@ def open_chat_window(username):
         else:
             display_message("Bot: 'No estoy seguro de lo quieres, disculpa, puedes intentarlo de nuevo?")
 
-        #si el usuario demora en responder 30seg enviará este mensaje
-    #def simulate_bot_response():
-        #time.sleep(30)
-        #display_message("Bot: Estoy aquí para ayudarte. Qué necesitas?")
-    #será un chat personalizado ya que el nombre ingresado en el loginserá parte de la bienvenida
     display_message(f"Bot: ¡Bienvenido al chat, {username}! ¿En qué puedo ayudarte?")
-    #chat_window.after(1000, simulate_bot_response) 
-
     chat_window.mainloop()
 
 if __name__ == "__main__":

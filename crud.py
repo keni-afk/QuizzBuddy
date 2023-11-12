@@ -42,12 +42,6 @@ root.title("Inserción de Datos de Estudiante")
 root.geometry("400x300")
 load_background_image()
 
-# Colores y fuentes
-bg_color = "#F6F7F9"
-label_font = ("Helvetica", 12)
-entry_font = ("Helvetica", 12)
-button_font = ("Helvetica", 12)
-
 # Conexión a la base de datos
 try:
     connection = mysql.connector.connect(host='localhost', database='bd_certus', user='root', password='')
