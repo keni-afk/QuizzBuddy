@@ -1,14 +1,13 @@
 import mysql.connector
-import getpass
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import PhotoImage
 
 def insert_data():
-    _cod = cod_entry.get()
-    _nom = nom_entry.get()
-    _ape = ape_entry.get()
-    _con = con_entry.get()
+    _cod = entries["Código"].get()
+    _nom = entries["Nombres"].get()
+    _ape = entries["Apellidos"].get()
+    _con = entries["Contraseña"].get()
 
     try:
         sql_insert_Query = "INSERT INTO t_estudiantes(cod_estudiante, nom_estudiante, ape_estudiante, con_estudiante) VALUES (%s, %s, %s, %s)"
@@ -17,29 +16,28 @@ def insert_data():
         connection.commit()
         messagebox.showinfo("Éxito", "Registro insertado!")
 
-        cod_entry.delete(0, "end")
-        nom_entry.delete(0, "end")
-        ape_entry.delete(0, "end")
-        con_entry.delete(0, "end")
+        clear_entries()
 
     except mysql.connector.Error as e:
         messagebox.showerror("Error", f"Error en la inserción: {e}")
 
 def validate_code(P):
-    if len(P) <= 8:
-        return True
-    else:
-        return False
+    return len(P) <= 8
 
 def load_background_image():
-    background_image = PhotoImage(file="./certus5.png")
+    background_image = PhotoImage(file="tt2.png")
     background_label = tk.Label(root, image=background_image)
-    background_label.place(relwidth=1, relheight=1)  
+    background_label.place(relwidth=1, relheight=1)
     background_label.image = background_image
+
+def clear_entries():
+    for entry in entries.values():
+        entry.delete(0, "end")
 
 root = tk.Tk()
 root.title("Inserción de Datos de Estudiante")
 root.geometry("400x300")
+root.configure(bg="#F6F7F9")
 load_background_image()
 
 # Conexión a la base de datos
@@ -50,28 +48,21 @@ except mysql.connector.Error as e:
     root.destroy()
 
 # Etiquetas y campos de entrada
-cod_label = tk.Label(root, text="Código:", font=label_font, bg=bg_color)
-cod_label.pack()
-validation = root.register(validate_code) 
-cod_entry = tk.Entry(root, validate="key", validatecommand=(validation, "%P"))
-cod_entry.pack()
+label_font = ("Helvetica", 14)
+bg_color = "#F6F7F9"
 
-nom_label = tk.Label(root, text="Nombres:", font=label_font, bg=bg_color)
-nom_label.pack()
-nom_entry = tk.Entry(root)
-nom_entry.pack()
+fields = ["Código", "Nombres", "Apellidos", "Contraseña"]
+entries = {}
 
-ape_label = tk.Label(root, text="Apellidos:", font=label_font, bg=bg_color)
-ape_label.pack()
-ape_entry = tk.Entry(root)
-ape_entry.pack()
+for i, field in enumerate(fields, start=1):
+    label = tk.Label(root, text=f"{field}:", font=label_font, bg=bg_color)
+    label.place(x=50, y=30 + i * 40)
 
-con_label = tk.Label(root, text="Contraseña:", font=label_font, bg=bg_color)
-con_label.pack()
-con_entry = tk.Entry(root, show="*")
-con_entry.pack()
+    entry = tk.Entry(root, show="*" if field == "Contraseña" else "", font=label_font, width=15)
+    entry.place(x=200, y=30 + i * 40)
+    entries[field] = entry
 
 insert_button = tk.Button(root, text="Insertar Registro", command=insert_data, font=label_font, bg=bg_color)
-insert_button.pack()
+insert_button.place(x=200, y=230)
 
 root.mainloop()

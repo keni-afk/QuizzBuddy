@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import scrolledtext
+import mysql.connector
 
 #va abrir la ventana de chat
 def open_chat_window(username):
@@ -36,26 +37,34 @@ def open_chat_window(username):
     #mnsjs del user
     def handle_user_message(user_input):
         cleaned_input = user_input.lower().strip()
-        
-        keyword_responses = {
-            'hola': 'Hola soy botCertus 😊 ¿En qué puedo ayudarte?',
-            'información de un curso': 'De que curso deseas tener mayor información?:\n1.-GESTIÓN DE MARCA PERSONAL\n2.-Arquitectura de Tecnologías de Información.\n3.-Diseño de Soluciones de Inteligencia Artificial.\n4.-Diseño de Soluciones Blockchain.\n5.-Emprendimiento: Proyecto integrador.\n6.-Experiencia Formativas en Situaciones Reales de Trabajo',             
-            '3': 'La Unidad Didáctica Integradora "Diseño de\nSoluciones de Inteligencia Artificial"\ncorresponde a la carrera de Diseño y Desarrollo\nde Software y Soluciones Móviles y tiene carácter\nteórico-práctico.\nA través de ella se busca que el estudiante sea\ncapaz de diseñar soluciones de inteligencia\nartificial utilizando diferentes servicios y\nherramientas de Machine Learning.',
-            'requisitos del curso': 'Los requisitos del curso incluyen:\n1.Previo saberes de implemnetación\n2.Puntulidad de acuerdo a los horarios',
-            'grabaciones de las clases': 'Puedes ver las grabaciones de las clases en las siguientes fechas:\nVer Grabación = miércoles, 11 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023\nVer Grabación = miércoles, 04 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023.\nVer Grabación = miércoles, 04 de octubre de 2023.',
-            'sistemas de evaluación': 'La calificación de las evidencias 3 y 4 (E3 y E4)\nse obtiene al aplicar la siguiente fórmula:\nE3 = PF3(0.70) + PA(0.30),\nE4 = PF4(0.70) + C(0.30).\nFinalmente, para la calificación final (CF)\nde la unidad didáctica se aplica\nla siguiente fórmula:\nCF = E1(0.15) + E2(0.20) + E3(0.30) + E4(0.35).',
-            'dudas sobre el contenido del curso': 'El desarrollo de la unidad didáctica es fundamental porque\npermitirá al estudiante identificar problemas\nque pueden ser abordados mediante el\nuso de inteligencia artificial,\n y aplicar técnicas de análisis de datos y\naprendizaje automático para diseñar soluciones efectivas.\n Así como evaluar modelos de inteligencia\nartificial, utilizando herramientas y plataformas comunes,e interpretar los resultados\npara asegurar la precisión y la efectividad del modelo.'
-        }
 
-        response = None
-        for keyword, reply in keyword_responses.items():
-            if keyword in cleaned_input:
-                response = reply
-                break
-        if response:
-            display_message("Bot: " + response)
-        else:
-            display_message("Bot: 'No estoy seguro de lo quieres, disculpa, puedes intentarlo de nuevo?")
+        try:
+            connection = mysql.connector.connect(
+                host='localhost',
+                database='bd_certus',
+                user='root',
+                password=''
+            )
+
+            cursor = connection.cursor()
+
+            query = "SELECT respuesta FROM t_respuestas_chatbot WHERE pregunta = %s"
+            cursor.execute(query, (cleaned_input,))
+            result = cursor.fetchone()
+
+            if result:
+                response = result[0]
+                display_message("Bot: " + response)
+            else:
+                display_message("Bot: No estoy seguro de lo que quieres, disculpa, ¿puedes intentarlo de nuevo?")
+
+        except mysql.connector.Error as e:
+            display_message("Bot: Ocurrió un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.")
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
 
     display_message(f"Bot: ¡Bienvenido al chat, {username}! ¿En qué puedo ayudarte?")
     chat_window.mainloop()

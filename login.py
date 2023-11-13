@@ -72,7 +72,7 @@ root.geometry("600x480")
 root.configure(bg=background_color)
 
 #import archivo GIF
-gif_file = Image.open("./sistema-pos-1.gif")
+gif_file = Image.open("sistema-pos-1.gif")
 frames = [ImageTk.PhotoImage(frame) for frame in ImageSequence.Iterator(gif_file)]
 num_frames = len(frames)
 
