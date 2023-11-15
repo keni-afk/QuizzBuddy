@@ -3,12 +3,15 @@ from tkinter import scrolledtext
 import mysql.connector
 
 #va abrir la ventana de chat
-def open_chat_window(username):
+def open_chat_window(username,main_window):
     global chat_window
     chat_window = tk.Toplevel() #venatana emergente
     chat_window.title("Chat-Bot") #titulo de la ventana
     chat_window.configure(bg="#E6E6E6")
     chat_window.geometry("400x480")  #dimensiones de la ventana
+
+    # Ocultamos la ventana principal de inicio de sesión
+    main_window.withdraw()
 
     def open_login_window():
         global chat_window, main_window

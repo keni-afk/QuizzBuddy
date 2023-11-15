@@ -38,6 +38,9 @@ def show_welcome_message():
     close_button = tk.Button(welcome_window, text="Cerrar", command=welcome_window.destroy)
     close_button.pack()
 
+    #aquí ocultaremos la ventana de login cuando ingresemos a interactuar con el bot
+    root.withdraw()
+
 def salir_aplicacion():
     if messagebox.askokcancel("Salir", "¿Realmente quieres salir?"):
         root.destroy()
@@ -53,7 +56,7 @@ def on_login():
     result = login()
     #el usuario y contraseña deben estar en la base de datos
     if result == "¡Inicio de sesión exitoso!\n¡Bienvenido!":
-        chat.open_chat_window(_nom)
+        chat.open_chat_window(_nom, root)
     else:
         messagebox.showerror("Error", result)
 
