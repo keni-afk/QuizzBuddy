@@ -4,10 +4,21 @@ import mysql.connector
 
 #va abrir la ventana de chat
 def open_chat_window(username):
+    global chat_window
     chat_window = tk.Toplevel() #venatana emergente
     chat_window.title("Chat-Bot") #titulo de la ventana
     chat_window.configure(bg="#E6E6E6")
-    chat_window.geometry("400x440")  #dimensiones de la ventana
+    chat_window.geometry("400x480")  #dimensiones de la ventana
+
+    def open_login_window():
+        global chat_window, main_window
+        chat_window.destroy()
+        main_window.deiconify()
+
+    # Botón para cerrar sesión
+    logout_button = tk.Button(chat_window, text="Cerrar Sesión", command=open_login_window, font=("Arial", 12))
+    logout_button.configure(bg="#FF0000", fg="white")
+    logout_button.pack(side=tk.BOTTOM, pady=10)
 
 #cuando el user da click en enviar su mensaje
     def send_message():

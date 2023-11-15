@@ -37,6 +37,14 @@ def show_welcome_message():
     welcome_label.pack()
     close_button = tk.Button(welcome_window, text="Cerrar", command=welcome_window.destroy)
     close_button.pack()
+
+def salir_aplicacion():
+    if messagebox.askokcancel("Salir", "¿Realmente quieres salir?"):
+        root.destroy()
+
+def abrir_ayuda():
+    messagebox.showinfo("Ayuda", "Te asesoraremos para que puedas solventar tus dudas.")
+
 #cuando el usuario le da al boton "iniciar sesión"
 def on_login():
     global _nom, _con
@@ -62,7 +70,7 @@ def update_gif_label(frame):
 
 #ventana principal-login
 root = tk.Tk()
-root.title("Inicio de Sesión")
+root.title("QuizzBuddy - Inicio de Sesión")
 
 #colores y fuentes de letra
 background_color = "#042454"
@@ -70,6 +78,19 @@ font = ("Helvetica", 12)
 #dimensiones de la ventana
 root.geometry("600x480")
 root.configure(bg=background_color)
+
+# Configurar la barra de menú en la ventana principal
+barra_menu = tk.Menu()
+
+# Menú Archivo
+menu_archivo = tk.Menu(barra_menu, tearoff=0)
+menu_archivo.add_command(label="Salir", command=salir_aplicacion)
+barra_menu.add_cascade(label="Archivo", menu=menu_archivo)
+
+# Menú Ayuda
+menu_ayuda = tk.Menu(barra_menu, tearoff=0)
+menu_ayuda.add_command(label="Ayuda", command=abrir_ayuda)
+barra_menu.add_cascade(label="Ayuda", menu=menu_ayuda)
 
 #import archivo GIF
 gif_file = Image.open("sistema-pos-1.gif")
@@ -115,6 +136,8 @@ canvas.create_window(300, 350, anchor=tk.NW, window=login_button)
 register_button = tk.Button(canvas, text="Aún no estás registrado?", command=register, font=("Helvetica", 14), bg="#00CC00", fg="white")
 canvas.create_window(300, 400, anchor=tk.NW, window=register_button)
 
+# Configurar la barra de menú en la ventana principal
+root.config(menu=barra_menu)
 
 root.mainloop()
 
