@@ -64,7 +64,6 @@ def register():
     messagebox.showinfo("Bienvenido", "Te vas a registrar a este nuevo mundo:)")
     subprocess.Popen(["python", "crud.py"])
 
-
 def update_gif_label(frame):
     #Gif
     label.configure(image=frames[frame])
@@ -129,7 +128,6 @@ password_label = tk.Label(canvas, text="Contraseña:", font=("Helvetica", 14), b
 canvas.create_window(300, 270, anchor=tk.NW, window=password_label)
 password_entry = tk.Entry(canvas, show="*", font=("Helvetica", 14))
 canvas.create_window(300, 300, anchor=tk.NW, window=password_entry)
-
 
 # Botón de inicio de sesión
 login_button = tk.Button(canvas, text="Iniciar Sesión", command=on_login, font=("Helvetica", 14), bg="#007BFF", fg="white")
