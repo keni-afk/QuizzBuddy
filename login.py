@@ -5,6 +5,7 @@ from tkinter import messagebox  #para mostrar mensajes emergentes
 import chat #las funcionalidades del chatbot
 from tkinter import PhotoImage #cargamos img
 from PIL import Image, ImageTk, ImageSequence #también imágenes pero con Gifs
+import chat  # Importa chat aquí
 
 
 # Función para el inicio de sesión
@@ -20,6 +21,7 @@ def login():
         cursor = connection.cursor()
         cursor.execute(f"SELECT * FROM t_estudiantes WHERE nom_estudiante = '{_nom}'")
         user = cursor.fetchone()
+
         #si el usuario está registrado en el mysql,podrá acceder en caso contrariio no se habilita nada
         if user is not None and user[3] == _con:
             show_welcome_message()
@@ -28,6 +30,17 @@ def login():
             return "Error en las credenciales"
     except mysql.connector.Error as e:
         return "Error en la consulta: " + str(e)
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+
+#resetear los campos de inicio de sesión
+def reset_login_fields():
+    global _nom
+    _nom = ""
+    username_entry.delete(0, tk.END)
+    password_entry.delete(0, tk.END)
 
 #este es la ventana emergente que mostrará el mensaje
 def show_welcome_message():
@@ -49,20 +62,29 @@ def abrir_ayuda():
     messagebox.showinfo("Ayuda", "Te asesoraremos para que puedas solventar tus dudas.")
 
 #cuando el usuario le da al boton "iniciar sesión"
-def on_login():
+def on_login(main_window):
     global _nom, _con
     _nom = username_entry.get()
     _con = password_entry.get()
     result = login()
     #el usuario y contraseña deben estar en la base de datos
     if result == "¡Inicio de sesión exitoso!\n¡Bienvenido!":
-        chat.open_chat_window(_nom, root)
+        # Mostrar mensaje de bienvenida y abrir la ventana de chat
+        chat.open_chat_window(_nom, root, reset_login_fields)  # Pasa root y la función reset_login_fields como argumentos
     else:
         messagebox.showerror("Error", result)
 
+#cuando el usuario le da al boton "registrar"
 def register():
     messagebox.showinfo("Bienvenido", "Te vas a registrar a este nuevo mundo:)")
     subprocess.Popen(["python", "crud.py"])
+
+# Función para mostrar/ocultar la contraseña
+def toggle_password_visibility():
+    if password_entry.cget("show") == "":
+        password_entry.config(show="*")
+    else:
+        password_entry.config(show="")
 
 def update_gif_label(frame):
     #Gif
@@ -115,6 +137,14 @@ update_gif_label(0)      #gIF en bucle.
 #image_label.config(width=400, height=300)
 #canvas.create_window(450, 100, anchor="center", window=image_label)
 
+# Etiqueta para mostrar/ocultar contraseña
+toggle_password_label = tk.Label(canvas, text="Mostrar Contraseña", font=("Helvetica", 10),  bg=background_color, fg="white", cursor="hand2")
+canvas.create_window(300, 330, anchor=tk.NW, window=toggle_password_label)
+
+# Asocia la función toggle_password_visibility al evento de clic en la etiqueta
+toggle_password_label.bind("<Button-1>", lambda event: toggle_password_visibility())
+
+
 #etiquetas y campos encima de la imagen, con su tipo y color de letra respectivo
 username_label = tk.Label(canvas, text="INSTITUTO DE\nEDUCACIÓN SUPERIOR\nTECNOLÓGICO\nPRIVADO CERTUS", font=("Ginebra", 14), bg=background_color, fg="white")
 canvas.create_window(367, 15, anchor=tk.NW, window=username_label)
@@ -130,7 +160,7 @@ password_entry = tk.Entry(canvas, show="*", font=("Helvetica", 14))
 canvas.create_window(300, 300, anchor=tk.NW, window=password_entry)
 
 # Botón de inicio de sesión
-login_button = tk.Button(canvas, text="Iniciar Sesión", command=on_login, font=("Helvetica", 14), bg="#007BFF", fg="white")
+login_button = tk.Button(canvas, text="Iniciar Sesión", command=lambda: on_login(root), font=("Helvetica", 14), bg="#007BFF", fg="white")
 canvas.create_window(300, 350, anchor=tk.NW, window=login_button)
 
 # Botón para registrarse
